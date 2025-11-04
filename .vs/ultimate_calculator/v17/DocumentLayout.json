@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ambig\\source\\repos\\ultimate_calculator\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B6A2E3B7-FD6A-41BB-AF94-802FA398D7EA}|ultimate_calculator.pyproj|C:\\Users\\ambig\\source\\repos\\ultimate_calculator\\ultimate_calculator.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{B6A2E3B7-FD6A-41BB-AF94-802FA398D7EA}|ultimate_calculator.pyproj|solutionrelative:ultimate_calculator.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ultimate_calculator.py",
+              "DocumentMoniker": "C:\\Users\\ambig\\source\\repos\\ultimate_calculator\\ultimate_calculator.py",
+              "RelativeDocumentMoniker": "ultimate_calculator.py",
+              "ToolTip": "C:\\Users\\ambig\\source\\repos\\ultimate_calculator\\ultimate_calculator.py",
+              "RelativeToolTip": "ultimate_calculator.py",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAowHAAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2025-10-31T03:49:01.48Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
