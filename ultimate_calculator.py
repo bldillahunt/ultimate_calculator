@@ -13,6 +13,7 @@ root.geometry("640x480")
 binary_label = tk.Label(root, text="")
 double_label = tk.Label(root, text="")
 single_label = tk.Label(root, text="")
+hex_label = tk.Label(root, text="")
 
 def decimal_string_to_binary(decimal_value):
     temp = 0
@@ -114,6 +115,9 @@ def dec_to_single(decimal_value):
     hex_representation = packed_bytes.hex()
     return hex_representation
 
+def dec_to_hex(integer_value):
+    return int(integer_value)
+
 def bin_button_click():
     global binary_label
     double_value = float(dec_to_bin_var.get())
@@ -122,9 +126,9 @@ def bin_button_click():
     if (binary_label.winfo_exists()):
         binary_label.config(text="")
 
-    binary_label = tk.Label(root, text=f"Current Value: {bin(int(binary_value))}", font=("Arial", 12))
-    binary_label.pack(pady=0)
-    binary_label.place(x=100, y=75)
+    binary_label = tk.Label(root, text=f"Two's Complement Binary = {bin(int(binary_value))}", font=("Arial", 10))
+#    binary_label.pack(pady=0, anchor="center")
+    binary_label.place(relx=0.5, rely=0.18, anchor="center")
 
 def double_button_click():
     global double_label
@@ -134,9 +138,9 @@ def double_button_click():
     if (double_label.winfo_exists()):
         double_label.config(text="")
 
-    double_label = tk.Label(root, text=f"Current Value: {double_value}", font=("Arial", 12))
+    double_label = tk.Label(root, text=f"IEEE754 double = {double_value}", font=("Arial", 10))
     double_label.pack(pady=0)
-    double_label.place(x=225, y=300)
+    double_label.place(x=225, y=285)
 
 def single_button_click():
     global single_label
@@ -146,9 +150,21 @@ def single_button_click():
     if (single_label.winfo_exists()):
         single_label.config(text="")
 
-    single_label = tk.Label(root, text=f"Current Value: {single_value}", font=("Arial", 12))
+    single_label = tk.Label(root, text=f"IEEE754 single =  {single_value}", font=("Arial", 10))
     single_label.pack(pady=0)
     single_label.place(x=225, y=180)
+
+def hex_button_click():
+    global hex_label
+    hex_value = float(dec_to_hex_var.get())
+    hex_value = dec_to_hex(hex_value)
+
+    if (hex_label.winfo_exists()):
+        hex_label.config(text="")
+
+    hex_label = tk.Label(root, text=f"Hex = {hex(hex_value)}", font=("Arial", 10))
+    hex_label.pack(pady=0)
+    hex_label.place(x=225, y=400)
 
 # Add widgets for label and button
 label_d2b = tk.Label(root, text="Convert decimal to binary")
@@ -162,6 +178,9 @@ button_d2s = tk.Button(root, text="Convert")
 
 label_d2d = tk.Label(root, text="Convert decimal to double")
 button_d2d = tk.Button(root, text="Convert")
+
+label_d2h = tk.Label(root, text="Convert decimal to hex")
+button_d2h = tk.Button(root, text="Convert")
 
 # Create the box for the floating point value
 button_d2b.config(command=bin_button_click)
@@ -181,6 +200,14 @@ button_d2d.place(x=290, y=225)
 label_d2d.pack(ipady = 0, pady=0)
 label_d2d.place(x=250, y=200)
 button_d2d.config(command=double_button_click)
+
+dec_to_hex_var = create_numeric_box("", 0, 0, 0, 80)
+button_d2h.pack(ipady=0, pady=0)
+button_d2h.place(x=290, y=335)
+
+label_d2h.pack(ipady = 0, pady=0)
+label_d2h.place(x=250, y=310)
+button_d2h.config(command=hex_button_click)
 
 root.mainloop()
 
