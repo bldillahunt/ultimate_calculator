@@ -18,37 +18,26 @@ hex_label = tk.Label(root, text="")
 def decimal_string_to_binary(decimal_value):
     temp = 0
     input_size = len(decimal_value)
-    print("length = ", input_size)
+#    print("length = ", input_size)
     for i in range(0, input_size):
         index = (input_size-1) - i
-        print("index = ", index)
+#        print("index = ", index)
         if (decimal_value[index] == '1'):
             temp = temp | (1 << i)
-        print("decimal value = ", decimal_value[index], "temp = ", temp)
+#        print("decimal value = ", decimal_value[index], "temp = ", temp)
     return temp
 
 def validate_numeric_input(P):
    # P is the value of the entry after the change
-    print(P)
+ #   print(P)
     return P.isdecimal() or P == "-" or P == "." or P == "" # Allow empty string or digits
 
 def create_numeric_box(input_text, x, y, xoffset, yoffset):
-	# label = tk.label(root, text=input_text)
-	# label.config(
-	# 	font=("arial", 10),      # set font and size
-	# 	fg="blue",               # set foreground color (text color)
-	# 	bg="lightgray",          # set background color
-	# 	padx=x,                  # add horizontal padding
-	# 	pady=y                   # add vertical padding
-	# )
-
 	# # place the label within the window using a geometry manager
-	# label.pack(padx=xoffset, pady=yoffset) # pack the label with some vertical padding
 	entry_var = tk.StringVar() # A variable to hold the entry's content
 	numeric_entry = tk.Entry(root, textvariable=entry_var)
 	numeric_entry.pack(padx=xoffset, pady=yoffset)
 	vcmd = (root.register(validate_numeric_input), '%P')
-#	numeric_entry.config(validate="key", validatecommand=vcmd)
 	return entry_var
 
 def float_to_binary(n, precision):
@@ -65,7 +54,7 @@ def float_to_binary(n, precision):
 
     # Convert integer part to binary
     integer_binary = bin(integer_part)[2:]  # [2:] removes the "0b" prefix
-    print(integer_part, fractional_part, integer_binary)
+#    print(integer_part, fractional_part, integer_binary)
 
     # Convert fractional part to binary
     fractional_binary = []
@@ -80,12 +69,12 @@ def float_to_binary(n, precision):
     else:
         fractional_binary = ['0']
     
-    print(f"fractional binary = ", fractional_binary)
-    print(f"integer binary = ", integer_binary)
+ #   print(f"fractional binary = ", fractional_binary)
+ #   print(f"integer binary = ", integer_binary)
 
     single_number_str = "".join(fractional_binary)
     single_number = single_number_str
-    print("single number = ", single_number)
+ #   print("single number = ", single_number)
 
 #    raw_binary = f"{integer_binary}{single_number}"
     if (len(fractional_binary) > 1) or (fractional_binary[0] == '1'):
@@ -93,7 +82,7 @@ def float_to_binary(n, precision):
     else:
         raw_binary = str(integer_binary)
 
-    print("raw binary = ", raw_binary)
+#    print("raw binary = ", raw_binary)
 
     raw_binary_int = decimal_string_to_binary(raw_binary)
 
@@ -102,7 +91,7 @@ def float_to_binary(n, precision):
     else:
         twos_complement = int(raw_binary_int)
 
-    print(f"{twos_complement:0b}")
+#    print(f"{twos_complement:0b}")
     return f"{twos_complement}"
 
 def dec_to_double(decimal_value):
@@ -120,51 +109,58 @@ def dec_to_hex(integer_value):
 
 def bin_button_click():
     global binary_label
-    double_value = float(dec_to_bin_var.get())
-    binary_value = float_to_binary(double_value, 64)
 
-    if (binary_label.winfo_exists()):
-        binary_label.config(text="")
+    if (len(dec_to_bin_var.get()) != 0):
+        double_value = float(dec_to_bin_var.get())
+        binary_value = float_to_binary(double_value, 64)
 
-    binary_label = tk.Label(root, text=f"Two's Complement Binary = {bin(int(binary_value))}", font=("Arial", 10))
-#    binary_label.pack(pady=0, anchor="center")
-    binary_label.place(relx=0.5, rely=0.18, anchor="center")
+        if (binary_label.winfo_exists()):
+            binary_label.config(text="")
+
+        binary_label = tk.Label(root, text=f"Two's Complement Binary = {bin(int(binary_value))}", font=("Arial", 10))
+        binary_label.place(relx=0.5, rely=0.18, anchor="center")
 
 def double_button_click():
     global double_label
-    double_value = float(dec_to_double_var.get())
-    double_value = dec_to_double(double_value)
 
-    if (double_label.winfo_exists()):
-        double_label.config(text="")
+    if (len(dec_to_double_var.get()) != 0):
+        double_value = float(dec_to_double_var.get())
+        double_value = dec_to_double(double_value)
 
-    double_label = tk.Label(root, text=f"IEEE754 double = {double_value}", font=("Arial", 10))
-    double_label.pack(pady=0)
-    double_label.place(x=225, y=285)
+        if (double_label.winfo_exists()):
+            double_label.config(text="")
+
+        double_label = tk.Label(root, text=f"IEEE754 double = {double_value}", font=("Arial", 10))
+        double_label.pack(pady=0)
+        double_label.place(x=225, y=285)
 
 def single_button_click():
     global single_label
-    single_value = float(dec_to_single_var.get())
-    single_value = dec_to_single(single_value)
 
-    if (single_label.winfo_exists()):
-        single_label.config(text="")
+    if (len(dec_to_single_var.get()) != 0):
+        single_value = float(dec_to_single_var.get())
+        single_value = dec_to_single(single_value)
 
-    single_label = tk.Label(root, text=f"IEEE754 single =  {single_value}", font=("Arial", 10))
-    single_label.pack(pady=0)
-    single_label.place(x=225, y=180)
+        if (single_label.winfo_exists()):
+            single_label.config(text="")
+
+        single_label = tk.Label(root, text=f"IEEE754 single =  {single_value}", font=("Arial", 10))
+        single_label.pack(pady=0)
+        single_label.place(x=225, y=180)
 
 def hex_button_click():
     global hex_label
-    hex_value = float(dec_to_hex_var.get())
-    hex_value = dec_to_hex(hex_value)
 
-    if (hex_label.winfo_exists()):
-        hex_label.config(text="")
+    if (len(dec_to_hex_var.get()) != 0):
+        hex_value = float(dec_to_hex_var.get())
+        hex_value = dec_to_hex(hex_value)
 
-    hex_label = tk.Label(root, text=f"Hex = {hex(hex_value)}", font=("Arial", 10))
-    hex_label.pack(pady=0)
-    hex_label.place(x=225, y=400)
+        if (hex_label.winfo_exists()):
+            hex_label.config(text="")
+
+        hex_label = tk.Label(root, text=f"Hex = {hex(hex_value)}", font=("Arial", 10))
+        hex_label.pack(pady=0)
+        hex_label.place(x=225, y=400)
 
 # Add widgets for label and button
 label_d2b = tk.Label(root, text="Convert decimal to binary")
