@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\ambig\\source\\repos\\ultimate_calculator\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B6A2E3B7-FD6A-41BB-AF94-802FA398D7EA}|ultimate_calculator.pyproj|C:\\Users\\ambig\\source\\repos\\ultimate_calculator\\ultimate_calculator.py||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{B6A2E3B7-FD6A-41BB-AF94-802FA398D7EA}|ultimate_calculator.pyproj|solutionrelative:ultimate_calculator.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{B6A2E3B7-FD6A-41BB-AF94-802FA398D7EA}|ultimate_calculator.pyproj|C:\\Users\\ambig\\source\\repos\\ultimate_calculator\\ultimate_calculator.py||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{B6A2E3B7-FD6A-41BB-AF94-802FA398D7EA}|ultimate_calculator.pyproj|solutionrelative:ultimate_calculator.py||{8B382828-6202-11D1-8870-0000F87579D2}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,11 +14,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             },
             {
               "$type": "Document",
@@ -28,14 +32,10 @@
               "RelativeDocumentMoniker": "ultimate_calculator.py",
               "ToolTip": "C:\\Users\\ambig\\source\\repos\\ultimate_calculator\\ultimate_calculator.py",
               "RelativeToolTip": "ultimate_calculator.py",
-              "ViewState": "AgIAAEMAAAAAAAAAAADwv1QAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAwwFIAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2025-11-07T18:36:06.54Z",
+              "WhenOpened": "2026-07-25T23:12:10.107Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             }
           ]
         }
