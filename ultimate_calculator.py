@@ -1,214 +1,232 @@
-import math
-import sys
-import tkinter as tk
-import ieee754
-from ieee754 import double
-import struct
+import math 
+import sys 
+import tkinter as tk 
+from tkinter import scrolledtext
+import struct 
 
-# Create the box
-root = tk.Tk()
-root.title("Ultimate Calculator")
-root.geometry("640x480")
+# Create main window
+root = tk.Tk() 
+root.title("Fixed-Point & IEEE754 Forward/Reverse Calculator") 
+root.geometry("700x650") 
 
-binary_label = tk.Label(root, text="")
-double_label = tk.Label(root, text="")
-single_label = tk.Label(root, text="")
-hex_label = tk.Label(root, text="")
+# --- REVERSE CONVERSION LOGIC ---
 
-def decimal_string_to_binary(decimal_value):
-	temp = 0
-	input_size = len(decimal_value)
-#    print("length = ", input_size)
-	for i in range(0, input_size):
-		index = (input_size-1) - i
-#        print("index = ", index)
-		if (decimal_value[index] == '1'):
-			temp = temp | (1 << i)
-#        print("decimal value = ", decimal_value[index], "temp = ", temp)
-	return temp
+def binary_to_float(bin_str):
+    """Converts a binary string like '-101.11' or '101.11' back to a decimal float."""
+    try:
+        bin_str = bin_str.strip()
+        if not bin_str or bin_str == "0.0":
+            return 0.0
+        
+        sign = 1
+        if bin_str.startswith("-"):
+            sign = -1
+            bin_str = bin_str[1:]
+            
+        if "." in bin_str:
+            integer_part, fractional_part = bin_str.split(".")
+        else:
+            integer_part, fractional_part = bin_str, ""
+            
+        decimal_val = int(integer_part, 2) if integer_part else 0
+        
+        for idx, bit in enumerate(fractional_part):
+            if bit == '1':
+                decimal_val += 2 ** -(idx + 1)
+                
+        return decimal_val * sign
+    except Exception:
+        return "Invalid Binary Format"
 
-def validate_numeric_input(P):
-   # P is the value of the entry after the change
- #   print(P)
-	return P.isdecimal() or P == "-" or P == "." or P == "" # Allow empty string or digits
+def single_hex_to_dec(hex_str):
+    """Converts a 32-bit IEEE754 hex string (8 hex chars) back to a float."""
+    try:
+        hex_str = hex_str.strip().replace("0x", "")
+        return struct.unpack('>f', bytes.fromhex(hex_str))[0]
+    except Exception:
+        return "Invalid Hex Format (Requires 8 hex characters)"
 
-def create_numeric_box(input_text, x, y, xoffset, yoffset):
-	# # place the label within the window using a geometry manager
-	entry_var = tk.StringVar() # A variable to hold the entry's content
-	numeric_entry = tk.Entry(root, textvariable=entry_var)
-	numeric_entry.pack(padx=xoffset, pady=yoffset)
-	vcmd = (root.register(validate_numeric_input), '%P')
-	return entry_var
+def double_hex_to_dec(hex_str):
+    """Converts a 64-bit IEEE754 hex string (16 hex chars) back to a float."""
+    try:
+        hex_str = hex_str.strip().replace("0x", "")
+        return struct.unpack('>d', bytes.fromhex(hex_str))[0]
+    except Exception:
+        return "Invalid Hex Format (Requires 16 hex characters)"
 
-def float_to_binary(n, precision):
-	if n == 0:
-		return "0.0"
+def hex_to_int_dec(hex_str):
+    """Converts a standard integer hex string back to a decimal integer."""
+    try:
+        hex_str = hex_str.strip()
+        return int(hex_str, 16)
+    except Exception:
+        return "Invalid Hex Format"
 
-	sign = ""
-	if n < 0:
-		sign = "-"
-		n = abs(n)
+# --- FORWARD CONVERSION LOGIC ---
 
-	integer_part = int(n)
-	fractional_part = n - integer_part
+def decimal_string_to_binary(decimal_value): 
+    temp = 0 
+    input_size = len(decimal_value) 
+    for i in range(0, input_size): 
+        index = (input_size-1) - i 
+        if (decimal_value[index] == '1'): 
+            temp = temp | (1 << i) 
+    return temp 
 
-	# Convert integer part to binary
-	integer_binary = bin(integer_part)[2:]  # [2:] removes the "0b" prefix
-#    print(integer_part, fractional_part, integer_binary)
+def float_to_binary(n, precision): 
+    if n == 0: 
+        return "0.0" 
+    sign = "" 
+    if n < 0: 
+        sign = "-" 
+        n = abs(n) 
+    integer_part = int(n) 
+    fractional_part = n - integer_part 
+    integer_binary = bin(integer_part)[2:] 
+    
+    fractional_binary = [] 
+    while fractional_part > 0 and len(fractional_binary) < precision: 
+        fractional_part *= 2 
+        bit = int(fractional_part) 
+        fractional_binary.append(str(bit)) 
+        fractional_part -= bit 
+        
+    fractional_string = "".join(fractional_binary) 
+    single_number_str = "".join(fractional_binary) 
+    
+    if (len(fractional_binary) > 1): 
+        raw_binary = str(integer_binary) + str(single_number_str) 
+    else: 
+        raw_binary = str(integer_binary) 
+        
+    return sign + integer_binary + "." + fractional_string 
 
-	# Convert fractional part to binary
-	fractional_binary = []
+def dec_to_double(decimal_value): 
+    packed_bytes = struct.pack('>d', decimal_value) 
+    return packed_bytes.hex() 
 
-#	if fractional_part > 0.0:
-#		while fractional_part > 0.0 and len(fractional_binary) < precision:
-	while fractional_part > 0 and len(fractional_binary) < precision:
-		fractional_part *= 2
-		bit = int(fractional_part)
-		fractional_binary.append(str(bit))
-		fractional_part -= bit
-#            print(fractional_part)
-#	else:
-#		fractional_binary = ['0']
+def dec_to_single(decimal_value): 
+    packed_bytes = struct.pack('>f', decimal_value) 
+    return packed_bytes.hex() 
 
-	fractional_string = "".join(fractional_binary)
-	
- #   print(f"fractional binary = ", fractional_binary)
- #   print(f"integer binary = ", integer_binary)
+def dec_to_hex(integer_value): 
+    return int(integer_value) 
 
-	single_number_str = "".join(fractional_binary)
-	single_number = single_number_str
- #   print("single number = ", single_number)
+# --- LOG PRINT CONTROLLER ---
+def print_to_log(title, val_name, input_val, result_name, result_val):
+    output_box.config(state=tk.NORMAL)
+    output_box.delete("1.0", tk.END)
+    output_box.insert(tk.END, f"=== {title.upper()} ===\n\n")
+    output_box.insert(tk.END, f"Input {val_name}: {input_val}\n\n")
+    output_box.insert(tk.END, f"Result {result_name}: {result_val}\n")
+    output_box.config(state=tk.DISABLED)
 
-#    raw_binary = f"{integer_binary}{single_number}"
-	if (len(fractional_binary) > 1): #or (fractional_binary[0] == '1'):
-		raw_binary = str(integer_binary) + str(single_number)
-	else:
-		raw_binary = str(integer_binary)
+# --- BUTTON EVENT HANDLERS ---
 
-#    print("raw binary = ", raw_binary)
+# Forward Buttons
+def click_fwd_bin():
+    if dec_to_bin_var.get():
+        val = float(dec_to_bin_var.get())
+        res = float_to_binary(val, 64)
+        print_to_log("Forward: Decimal to Binary", "Decimal", val, "Binary", res)
 
-	raw_binary_int = decimal_string_to_binary(raw_binary)
+def click_fwd_single():
+    if dec_to_single_var.get():
+        val = float(dec_to_single_var.get())
+        res = dec_to_single(val)
+        print_to_log("Forward: Decimal to IEEE754 Single", "Decimal", val, "Hex", res)
 
-	if sign == "-":
-		twos_complement = (int(raw_binary_int)^(2**32-1)) + 1
-	else:
-		twos_complement = int(raw_binary_int)
+def click_fwd_double():
+    if dec_to_double_var.get():
+        val = float(dec_to_double_var.get())
+        res = dec_to_double(val)
+        print_to_log("Forward: Decimal to IEEE754 Double", "Decimal", val, "Hex", res)
 
-#    print(f"{twos_complement:0b}")
-#	return f"{twos_complement}"
-	return sign + integer_binary + "." + fractional_string
+def click_fwd_hex():
+    if dec_to_hex_var.get():
+        val = float(dec_to_hex_var.get())
+        res = hex(dec_to_hex(val))
+        print_to_log("Forward: Decimal to Hex", "Decimal", val, "Hex", res)
 
-def dec_to_double(decimal_value):
-	packed_bytes = struct.pack('>d', decimal_value)
-	hex_representation = packed_bytes.hex()
-	return hex_representation
+# Reverse Buttons
+def click_rev_bin():
+    if bin_to_dec_var.get():
+        val = bin_to_dec_var.get()
+        res = binary_to_float(val)
+        print_to_log("Reverse: Binary to Decimal", "Binary String", val, "Decimal Float", res)
 
-def dec_to_single(decimal_value):
-	packed_bytes = struct.pack('>f', decimal_value)
-	hex_representation = packed_bytes.hex()
-	return hex_representation
+def click_rev_single():
+    if single_to_dec_var.get():
+        val = single_to_dec_var.get()
+        res = single_hex_to_dec(val)
+        print_to_log("Reverse: IEEE754 Single to Decimal", "Hex String", val, "Decimal Float", res)
 
-def dec_to_hex(integer_value):
-	return int(integer_value)
+def click_rev_double():
+    if double_to_dec_var.get():
+        val = double_to_dec_var.get()
+        res = double_hex_to_dec(val)
+        print_to_log("Reverse: IEEE754 Double to Decimal", "Hex String", val, "Decimal Float", res)
 
-def bin_button_click():
-	global binary_label
+def click_rev_hex():
+    if hex_to_dec_var.get():
+        val = hex_to_dec_var.get()
+        res = hex_to_int_dec(val)
+        print_to_log("Reverse: Hex to Decimal", "Hex String", val, "Decimal Integer", res)
 
-	if (len(dec_to_bin_var.get()) != 0):
-		double_value = float(dec_to_bin_var.get())
-		binary_value = float_to_binary(double_value, 64)
+# --- GUI LAYOUT ASSEMBLY ---
 
-		if (binary_label.winfo_exists()):
-			binary_label.config(text="")
+# Column 1 Layout: Forward Conversions (Left Side)
+tk.Label(root, text="FORWARD CONVERSIONS (Dec ? Bin/Hex)", font=("Arial", 10, "bold")).place(x=30, y=15)
 
-#		binary_label = tk.Label(root, text=f"Two's Complement Binary = {bin(int(binary_value))}", font=("Arial", 10))
-		binary_label = tk.Label(root, text=f"Two's Complement Binary = {binary_value}", font=("Arial", 10))
-		binary_label.place(relx=0.5, rely=0.18, anchor="center")
+tk.Label(root, text="Convert decimal to binary:").place(x=30, y=45)
+dec_to_bin_var = tk.StringVar()
+tk.Entry(root, textvariable=dec_to_bin_var, width=18).place(x=30, y=65)
+tk.Button(root, text="Convert", command=click_fwd_bin).place(x=160, y=61)
 
-def double_button_click():
-	global double_label
+tk.Label(root, text="Convert decimal to single:").place(x=30, y=105)
+dec_to_single_var = tk.StringVar()
+tk.Entry(root, textvariable=dec_to_single_var, width=18).place(x=30, y=125)
+tk.Button(root, text="Convert", command=click_fwd_single).place(x=160, y=121)
 
-	if (len(dec_to_double_var.get()) != 0):
-		double_value = float(dec_to_double_var.get())
-		double_value = dec_to_double(double_value)
+tk.Label(root, text="Convert decimal to double:").place(x=30, y=165)
+dec_to_double_var = tk.StringVar()
+tk.Entry(root, textvariable=dec_to_double_var, width=18).place(x=30, y=185)
+tk.Button(root, text="Convert", command=click_fwd_double).place(x=160, y=181)
 
-		if (double_label.winfo_exists()):
-			double_label.config(text="")
+tk.Label(root, text="Convert decimal to hex:").place(x=30, y=225)
+dec_to_hex_var = tk.StringVar()
+tk.Entry(root, textvariable=dec_to_hex_var, width=18).place(x=30, y=245)
+tk.Button(root, text="Convert", command=click_fwd_hex).place(x=160, y=241)
 
-		double_label = tk.Label(root, text=f"IEEE754 double = {double_value}", font=("Arial", 10))
-		double_label.pack(pady=0)
-		double_label.place(x=225, y=285)
 
-def single_button_click():
-	global single_label
+# Column 2 Layout: Reverse Conversions (Right Side)
+tk.Label(root, text="REVERSE CONVERSIONS (Bin/Hex ? Dec)", font=("Arial", 10, "bold")).place(x=380, y=15)
 
-	if (len(dec_to_single_var.get()) != 0):
-		single_value = float(dec_to_single_var.get())
-		single_value = dec_to_single(single_value)
+tk.Label(root, text="Convert binary to decimal:").place(x=380, y=45)
+bin_to_dec_var = tk.StringVar()
+tk.Entry(root, textvariable=bin_to_dec_var, width=18).place(x=380, y=65)
+tk.Button(root, text="Convert", command=click_rev_bin).place(x=510, y=61)
 
-		if (single_label.winfo_exists()):
-			single_label.config(text="")
+tk.Label(root, text="Convert single hex to decimal:").place(x=380, y=105)
+single_to_dec_var = tk.StringVar()
+tk.Entry(root, textvariable=single_to_dec_var, width=18).place(x=380, y=125)
+tk.Button(root, text="Convert", command=click_rev_single).place(x=510, y=121)
 
-		single_label = tk.Label(root, text=f"IEEE754 single =  {single_value}", font=("Arial", 10))
-		single_label.pack(pady=0)
-		single_label.place(x=225, y=180)
+tk.Label(root, text="Convert double hex to decimal:").place(x=380, y=165)
+double_to_dec_var = tk.StringVar()
+tk.Entry(root, textvariable=double_to_dec_var, width=18).place(x=380, y=185)
+tk.Button(root, text="Convert", command=click_rev_double).place(x=510, y=181)
 
-def hex_button_click():
-	global hex_label
+tk.Label(root, text="Convert hex to decimal integer:").place(x=380, y=225)
+hex_to_dec_var = tk.StringVar()
+tk.Entry(root, textvariable=hex_to_dec_var, width=18).place(x=380, y=245)
+tk.Button(root, text="Convert", command=click_rev_hex).place(x=510, y=241)
 
-	if (len(dec_to_hex_var.get()) != 0):
-		hex_value = float(dec_to_hex_var.get())
-		hex_value = dec_to_hex(hex_value)
 
-		if (hex_label.winfo_exists()):
-			hex_label.config(text="")
-
-		hex_label = tk.Label(root, text=f"Hex = {hex(hex_value)}", font=("Arial", 10))
-		hex_label.pack(pady=0)
-		hex_label.place(x=225, y=400)
-
-# Add widgets for label and button
-label_d2b = tk.Label(root, text="Convert decimal to binary")
-button_d2b = tk.Button(root, text="Convert")
-label_d2b.pack(side="top", pady=0)
-button_d2b.pack(side="top", pady=0)
-dec_to_bin_var = create_numeric_box("", 0, 0, 0, 10)
-
-label_d2s = tk.Label(root, text="Convert decimal to single")
-button_d2s = tk.Button(root, text="Convert")
-
-label_d2d = tk.Label(root, text="Convert decimal to double")
-button_d2d = tk.Button(root, text="Convert")
-
-label_d2h = tk.Label(root, text="Convert decimal to hex")
-button_d2h = tk.Button(root, text="Convert")
-
-# Create the box for the floating point value
-button_d2b.config(command=bin_button_click)
-
-dec_to_single_var = create_numeric_box("", 0, 0, 0, 75)
-button_d2s.pack(ipady=0, pady=0)
-button_d2s.place(x=290, y=125)
-
-label_d2s.pack(ipady = 0, pady=0)
-label_d2s.place(x=250, y=100)
-button_d2s.config(command=single_button_click)
-
-dec_to_double_var = create_numeric_box("", 0, 0, 0, 10)
-button_d2d.pack(ipady=0, pady=0)
-button_d2d.place(x=290, y=225)
-
-label_d2d.pack(ipady = 0, pady=0)
-label_d2d.place(x=250, y=200)
-button_d2d.config(command=double_button_click)
-
-dec_to_hex_var = create_numeric_box("", 0, 0, 0, 80)
-button_d2h.pack(ipady=0, pady=0)
-button_d2h.place(x=290, y=335)
-
-label_d2h.pack(ipady = 0, pady=0)
-label_d2h.place(x=250, y=310)
-button_d2h.config(command=hex_button_click)
+# Centralized Shared Output Box (Bottom)
+tk.Label(root, text="Calculation Results Log:", font=("Arial", 10, "bold")).place(x=30, y=300)
+output_box = scrolledtext.ScrolledText(root, width=78, height=16, font=("Courier New", 10))
+output_box.place(x=30, y=325)
+output_box.config(state=tk.DISABLED)
 
 root.mainloop()
-
